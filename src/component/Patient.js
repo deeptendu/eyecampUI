@@ -7,7 +7,7 @@ const Patient = (props) => {
 
   }
   return (
-    <Link id={props.patientNo} to="/patientupdateform" onClick={handleSearchClick} className="list-group-item list-group-item-action" aria-current="true" >
+    <Link id={props.patientNo} to="/patientupdateform" onClick={handleSearchClick} className="list-group-item border rounded border-secondary mb-1  list-group-item-action" aria-current="true" >
       <div className="d-flex w-100 justify-content-between">
         <h5 className="mb-1">Patient No {props.patientNo}</h5>
         <small>Age {props.age} years</small>

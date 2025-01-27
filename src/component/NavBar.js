@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const NavBar = (props) => {
-  const [patientNo, setPatientNo] = useState();
+  const [patientNo, setPatientNo] = useState("");
   let handleSearchChange = (e) => {
     setPatientNo(e.target.value);
   }
@@ -15,24 +15,35 @@ const NavBar = (props) => {
 
   }
   return (
-    <nav className="navbar navbar-expand-lg" >
-      <div className="container-fluid" >
+    <nav className="navbar navbar-expand-lg bg-body-tertiary border border-2 rounded border-secondary">
+      <div className="container-fluid ">
+        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span className="navbar-toggler-icon"></span>
+        </button>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <form className="container-fluid justify-content-start" >
-            <div className="input-group mb-2">
-              <Link to="/">
-                <button className="btn  btn-outline-success  me-2" type="button">Home</button>
-
+          <ul className="navbar-nav  me-auto  mb-2 mb-lg-1">
+            <li className="nav-item border rounded border-secondary mx-1">
+              <Link className="nav-link active" aria-current="page" to="/patientform">Home</Link>
+            </li>
+            <li className="nav-item border rounded border-secondary mx-1">
+              <Link className="nav-link active" to="/patientform">Patient Regitration</Link>
+            </li>
+            <li className="nav-item dropdown active border rounded border-secondary mx-1">
+              <Link className="nav-link dropdown-toggle" to="/" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {props.user?.name ? props.user.name : 'username'}
               </Link>
-              <Link to="/patientform">
-                <button className="btn btn-outline-success me-2" type="button">Patient Regitration</button>
-              </Link>
-              <input type="text" value={patientNo} onChange={handleSearchChange} className="form-control" placeholder="Search by Patient Number" aria-label="Search by Patient Number" aria-describedby="button-addon1" />
-              <Link to="/patientupdateform">
-                <button className="btn btn-primary" onClick={handleSearchClick} type="button" id="button-addon1">Search</button>
-              </Link>
-            </div>
+              <ul className="dropdown-menu border rounded border-secondary mx-1">
+                <li><Link className="dropdown-item " to="/" onClick={() => { localStorage.clear(); }} >Log out</Link></li>
+              </ul>
+            </li>
+          </ul>
+          <form className="d-flex" role="search">
+            <input className="form-control me-2" style={{ width: '600px' }} value={patientNo} onChange={handleSearchChange} type="search" placeholder="Search by Patient Number" aria-label="Search by Patient Number" />
+            <Link to="/patientupdateform">
+              <button className="btn btn-outline-success" onClick={handleSearchClick} type="submit">Search</button>
+            </Link>
           </form>
+
         </div>
       </div>
     </nav>

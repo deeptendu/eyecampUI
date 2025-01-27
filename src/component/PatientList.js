@@ -1,30 +1,39 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Patient from './Patient';
-import data from './PatientListData.json'
-
+//import data from './PatientListData.json'
+import {getPatientList} from '../ApiUrls'
 
 const PatientList = (props) => {
+    const [patientList, setPatientList] = useState([]);
+    const listSize=10;
     useEffect(() => {
-       // console.log(data);
-
-        // fetch('./PatientListData.json').then((res) => {
-        //     if (!res.ok) {
-        //         throw new Error
-        //             (`HTTP error! Status: ${res.status}`);
-        //     }
-        //     return res.json();
-        // })
-        // .then((data) =>
-        //     console.log(data))
-        // .catch((error) =>
-        //     console.error("Unable to fetch data:", error));
-    });
+        const headers = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'auth-token': localStorage.getItem('auth-token')
+            }
+        };
+        fetch(getPatientList+listSize, headers)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json()
+            })
+            .then(res => {
+                //console.log('response' + JSON.stringify(res.token));
+                setPatientList(res);
+            }).catch(err => {
+                console.log('error response' + err);
+            })
+    }, []);
 
     return (
-        <div className="list-group" style={{ 'overflowY': 'scroll', height: '500px' }}>
-            {data.map((p) => {
-                return(<Patient key={p.PatientNumber} patientNo={p.PatientNumber}
+        <div className="list-group border rounded border-secondary " style={{ 'overflowY': 'scroll', height: '600px' }}>
+            {patientList.map((p) => {
+                return (<Patient key={p.PatientNumber} patientNo={p.PatientNumber}
                     patientName={p.PatientName}
                     age={p.Age}
                     husbandName={p.HusbandName}

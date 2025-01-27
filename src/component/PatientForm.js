@@ -1,9 +1,10 @@
 
 import React from 'react';
 import { useState } from "react";
+import { createPatient } from '../ApiUrls';
+import { Link } from 'react-router-dom';
 
-
-const PatientForm = () => {
+const PatientForm = (props) => {
 
     const [patientName, setPatientName] = useState("");
     const [age, setAge] = useState();
@@ -14,9 +15,10 @@ const PatientForm = () => {
     const [district, setDistrict] = useState("");
     const [fatherName, setFatherName] = useState("");
     const [husbandName, setHusbandName] = useState("");
+    const [patientNumber, setPatientNumber] = useState("");
+    const [createdSuccessFully, setCreatedSuccessFully] = useState(false);
 
     let patientDetails = {
-        PatientNumber: 1000,
         PatientName: patientName,
         Age: age,
         Gender: gender,
@@ -25,7 +27,8 @@ const PatientForm = () => {
         State: state,
         District: district,
         FatherName: fatherName,
-        HusbandName: husbandName
+        HusbandName: husbandName,
+        email: props.user.email
     };
 
     let nameOnChange = (event) => {
@@ -68,11 +71,49 @@ const PatientForm = () => {
     }
 
     let handleOnSubmit = (event) => {
+
         console.log(patientDetails);
+        const headers = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'auth-token': localStorage.getItem('auth-token')
+            },
+            body: JSON.stringify(patientDetails)
+
+        };
+        fetch(createPatient, headers)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json()
+            })
+            .then(res => {
+                console.log('response' + JSON.stringify(res));
+                setPatientNumber(res.PatientNumber);
+                setCreatedSuccessFully(true);
+            }).catch(err => {
+                console.log('error response' + err);
+            })
+    }
+
+    let reset = () =>{
+        setCreatedSuccessFully(false);
+        setPatientName("");
+        setAge();
+        setGender("");
+        setMobileNo()
+        setAadharNo("");
+         setState("");
+         setDistrict("");
+         setFatherName("");
+         setHusbandName("");
+         setPatientNumber("");
     }
     return (
         <React.Fragment>
-            <div className='container my-3' >
+            {!createdSuccessFully ? <div className='container border rounded border-primary my-3' >
                 {/* <h2>Patient Form</h2> */}
                 <div className='row my-3'>
                     <div className='col-md-2'>
@@ -217,7 +258,7 @@ const PatientForm = () => {
                 <div className='row my-3'>
                     <div className='col-md-6'>
                         <div className="col-md-12 d-grid gap-3">
-                            <button type="button" className="btn btn-outline-danger ">Reset</button>
+                            <button type="button" onClick={()=>reset()} className="btn btn-outline-danger ">Reset</button>
                         </div>
                     </div>
                     <div className='col-md-6'>
@@ -228,7 +269,19 @@ const PatientForm = () => {
 
 
                 </div>
-            </div>
+            </div> :
+                <div className="alert alert-success" role="alert">
+                    <h4 className="alert-heading">Patient Number {patientNumber}</h4>
+                    <p>Patient is create Successfully</p>
+                    <hr />
+                    <p className="mb-0">Patient Name {patientName}</p>
+                    <hr />
+                    <p className="mb-0">Patient Age {age}</p>
+                    <hr />
+                    <Link to='/patientform' onClick={()=>reset()}> Create Another Patient</Link>
+                </div>
+                }
+
         </React.Fragment>
     );
 }
